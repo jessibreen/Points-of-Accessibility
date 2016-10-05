@@ -6,9 +6,9 @@
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
     <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.25.1/mapbox-gl.js'></script>
     <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.25.1/mapbox-gl.css' rel='stylesheet' />
-    <style>
+    /*<style>
         #map { position:absolute; top:0; bottom:0; width:100%; }
-    </style>
+    </style>*/
     <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
     <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
@@ -45,16 +45,16 @@
         </section>
 
         <div id='map'style="width: 600px; height: 400px;"></div>
-<script>
-mapboxgl.accessToken = 'pk.eyJ1IjoiamVzc2licmVlbiIsImEiOiJGNnlGVkRrIn0.Ar8l7jFbPYG3SWR-DrTyNQ';
-var map = new mapboxgl.Map({
-    container: 'map', // container id
-    style: 'mapbox://styles/jessibreen/citd061d7002r2jlqwjdzfvh4', //stylesheet location
-    center: [-84.496,38.048], // starting position
-    zoom: 16, // starting zoom
-    bearing: 48 //angling the map to make N Limestone north
-});
-</script>
+        <script>
+        mapboxgl.accessToken = 'pk.eyJ1IjoiamVzc2licmVlbiIsImEiOiJGNnlGVkRrIn0.Ar8l7jFbPYG3SWR-DrTyNQ';
+        var map = new mapboxgl.Map({
+            container: 'map', // container id
+            style: 'mapbox://styles/jessibreen/citd061d7002r2jlqwjdzfvh4', //stylesheet location
+            center: [-84.496,38.048], // starting position
+            zoom: 16, // starting zoom
+            bearing: 48 //angling the map to make N Limestone north
+        });
+        </script>
 
         <footer>
           <!-- Points of Accessibility is maintained by <a href="https://github.com/jessibreen">jessibreen</a><br> -->
