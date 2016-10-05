@@ -113,7 +113,7 @@
         url: 'mapbox://jessibreen.citx6q3ow00fc33plnn506srt-2f9p8'
     });
     map.addLayer({
-        'id': 'bathroom',
+        'id': 'Accessible Bathroom',
         'type': 'circle',
         'source': 'bathroom',
         'layout': {
@@ -121,7 +121,7 @@
         },
         'paint': {
             'circle-radius': 8,
-            'circle-color': 'rgba(55,148,179,1)'
+            'circle-color': 'rgba(43,182,115,1)'
         },
         'source-layer': 'bathroom'
     });
@@ -131,7 +131,7 @@
         url: 'mapbox://jessibreen.citx6rx4r00dp2yplmi63yxnc-4juv1'
     });
     map.addLayer({
-        'id': 'visual',
+        'id': 'Braille & Visual Aids',
         'type': 'circle',
         'source': 'visual',
         'layout': {
@@ -139,7 +139,7 @@
         },
         'paint': {
             'circle-radius': 8,
-            'circle-color': 'rgba(55,148,179,1)'
+            'circle-color': 'rgba(0,114,178,1)'
         },
         'source-layer': 'visual'
     });
@@ -149,7 +149,7 @@
         url: 'mapbox://jessibreen.citx6rlkk00af2oqnw96vefsh-2v90t'
     });
     map.addLayer({
-        'id': 'outlets',
+        'id': 'Available Outlets',
         'type': 'circle',
         'source': 'outlets',
         'layout': {
@@ -157,7 +157,7 @@
         },
         'paint': {
             'circle-radius': 8,
-            'circle-color': 'rgba(55,148,179,1)'
+            'circle-color': 'rgba(204,121,167,1)'
         },
         'source-layer': 'outlets'
     });
@@ -167,7 +167,7 @@
         url: 'mapbox://jessibreen.citx6rao200fe2ynvoeh37c6o-4s9su'
     });
     map.addLayer({
-        'id': 'instore',
+        'id': 'In-store Accessibility',
         'type': 'circle',
         'source': 'instore',
         'layout': {
@@ -175,7 +175,7 @@
         },
         'paint': {
             'circle-radius': 8,
-            'circle-color': 'rgba(55,148,179,1)'
+            'circle-color': 'rgba(251,176,64,1)'
         },
         'source-layer': 'instore'
     });
@@ -185,7 +185,7 @@
         url: 'mapbox://jessibreen.citx6qyfm00c42to8zjomxt4r-7itoh'
     });
     map.addLayer({
-        'id': 'entryway',
+        'id': 'Accessible Entryway',
         'type': 'circle',
         'source': 'entryway',
         'layout': {
@@ -193,7 +193,7 @@
         },
         'paint': {
             'circle-radius': 8,
-            'circle-color': 'rgba(55,148,179,1)'
+            'circle-color': 'rgba(90,180,229,1)'
         },
         'source-layer': 'entryway'
     });
@@ -201,7 +201,7 @@
     
 });
 
-var toggleableLayerIds = [ 'bathroom', 'entryway', 'instore', 'outlets', 'visual' ];
+var toggleableLayerIds = [ 'In-store Accessibility','Accessible Entryway', 'Accessible Bathroom', 'Braille & Visual Aids', 'Available Outlets'];
 
 for (var i = 0; i < toggleableLayerIds.length; i++) {
     var id = toggleableLayerIds[i];
