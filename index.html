@@ -17,6 +17,50 @@
   </head>
 
   <body>
+    <style>
+    #menu {
+        background: #fff;
+        position: absolute;
+        z-index: 1;
+        top: 10px;
+        right: 10px;
+        border-radius: 3px;
+        width: 120px;
+        border: 1px solid rgba(0,0,0,0.4);
+        font-family: 'Open Sans', sans-serif;
+    }
+
+    #menu a {
+        font-size: 13px;
+        color: #404040;
+        display: block;
+        margin: 0;
+        padding: 0;
+        padding: 10px;
+        text-decoration: none;
+        border-bottom: 1px solid rgba(0,0,0,0.25);
+        text-align: center;
+    }
+
+    #menu a:last-child {
+        border: none;
+    }
+
+    #menu a:hover {
+        background-color: #f8f8f8;
+        color: #404040;
+    }
+
+    #menu a.active {
+        background-color: #3887be;
+        color: #ffffff;
+    }
+
+    #menu a.active:hover {
+        background: #3074a4;
+    }
+</style>
+
     <div id="container">
       <div class="inner">
 
@@ -41,23 +85,151 @@
 <p>An initiative to map accessible businesses in the greater downtown area of Lexington and to educate and acknowledge businesses for accessibility.
 </p>
 
-<div id='map'style="width: 600px; height: 400px;"></div>
+
+<div id='map'style="width: 600px; height: 600px;">
+<nav id="menu"></nav>
+</div>
+
         <script>
         mapboxgl.accessToken = 'pk.eyJ1IjoiamVzc2licmVlbiIsImEiOiJGNnlGVkRrIn0.Ar8l7jFbPYG3SWR-DrTyNQ';
 
         var bounds = [
-            [-84.50067007287606, 38.04650320878658], // Southwest coordinates
-            [-84.49286229821908, 38.05030079544439]  // Northeast coordinates
+            [-84.50300710678505, 38.0428294258083], // Southwest coordinates
+            [-84.49091945904043, 38.055193900468076]  // Northeast coordinates
         ];
 
         var map = new mapboxgl.Map({
             container: 'map', // container id
             style: 'mapbox://styles/jessibreen/citd061d7002r2jlqwjdzfvh4', //stylesheet location
             center: [-84.496500, 38.049000], // starting position
-            zoom: 14, // starting zoom
+            zoom: 15.5, // starting zoom
             bearing: 48, //, //angling the map to make N Limestone north
             maxBounds: bounds //set bounds as max
         });
+
+        map.on('load', function () {
+    map.addSource('bathroom', {
+        type: 'vector',
+        url: 'mapbox://jessibreen.citx6q3ow00fc33plnn506srt-2f9p8'
+    });
+    map.addLayer({
+        'id': 'bathroom',
+        'type': 'circle',
+        'source': 'bathroom',
+        'layout': {
+            'visibility': 'visible'
+        },
+        'paint': {
+            'circle-radius': 8,
+            'circle-color': 'rgba(55,148,179,1)'
+        },
+        'source-layer': 'bathroom'
+    });
+
+    map.addSource('visual', {
+        type: 'vector',
+        url: 'mapbox://jessibreen.citx6rx4r00dp2yplmi63yxnc-4juv1'
+    });
+    map.addLayer({
+        'id': 'visual',
+        'type': 'circle',
+        'source': 'visual',
+        'layout': {
+            'visibility': 'visible'
+        },
+        'paint': {
+            'circle-radius': 8,
+            'circle-color': 'rgba(55,148,179,1)'
+        },
+        'source-layer': 'visual'
+    });
+
+    map.addSource('outlets', {
+        type: 'vector',
+        url: 'mapbox://jessibreen.citx6rlkk00af2oqnw96vefsh-2v90t'
+    });
+    map.addLayer({
+        'id': 'outlets',
+        'type': 'circle',
+        'source': 'outlets',
+        'layout': {
+            'visibility': 'visible'
+        },
+        'paint': {
+            'circle-radius': 8,
+            'circle-color': 'rgba(55,148,179,1)'
+        },
+        'source-layer': 'outlets'
+    });
+
+    map.addSource('instore', {
+        type: 'vector',
+        url: 'mapbox://jessibreen.citx6rao200fe2ynvoeh37c6o-4s9su'
+    });
+    map.addLayer({
+        'id': 'instore',
+        'type': 'circle',
+        'source': 'instore',
+        'layout': {
+            'visibility': 'visible'
+        },
+        'paint': {
+            'circle-radius': 8,
+            'circle-color': 'rgba(55,148,179,1)'
+        },
+        'source-layer': 'instore'
+    });
+
+    map.addSource('entryway', {
+        type: 'vector',
+        url: 'mapbox://jessibreen.citx6qyfm00c42to8zjomxt4r-7itoh'
+    });
+    map.addLayer({
+        'id': 'entryway',
+        'type': 'circle',
+        'source': 'entryway',
+        'layout': {
+            'visibility': 'visible'
+        },
+        'paint': {
+            'circle-radius': 8,
+            'circle-color': 'rgba(55,148,179,1)'
+        },
+        'source-layer': 'entryway'
+    });
+
+    
+});
+
+var toggleableLayerIds = [ 'bathroom', 'entryway', 'instore', 'outlets', 'visual' ];
+
+for (var i = 0; i < toggleableLayerIds.length; i++) {
+    var id = toggleableLayerIds[i];
+
+    var link = document.createElement('a');
+    link.href = '#';
+    link.className = 'active';
+    link.textContent = id;
+
+    link.onclick = function (e) {
+        var clickedLayer = this.textContent;
+        e.preventDefault();
+        e.stopPropagation();
+
+        var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+
+        if (visibility === 'visible') {
+            map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+            this.className = '';
+        } else {
+            this.className = 'active';
+            map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+        }
+    };
+
+    var layers = document.getElementById('menu');
+    layers.appendChild(link);
+}
         </script>
 
         </section>
