@@ -1,335 +1,50 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta charset='utf-8' />
+    <title>Points on a map</title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
-    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.25.1/mapbox-gl.js'></script>
-    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.25.1/mapbox-gl.css' rel='stylesheet' />
-    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
-   
-
-    <!-- Leaflet -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
-
-    <!-- JQuery -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <title>Points of Accessibility</title>
-  </head>
-
-  <body>
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.31.0/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.31.0/mapbox-gl.css' rel='stylesheet' />
     <style>
-    #menu {
-        background: #fff;
-        position: absolute;
-        z-index: 1;
-        top: 10px;
-        right: 10px;
-        border-radius: 3px;
-        width: 120px;
-        border: 1px solid rgba(0,0,0,0.4);
-        font-family: 'Open Sans', sans-serif;
-    }
-
-    #menu a {
-        font-size: 13px;
-        color: #404040;
-        display: block;
+      body {
         margin: 0;
         padding: 0;
-        padding: 10px;
-        text-decoration: none;
-        border-bottom: 1px solid rgba(0,0,0,0.25);
-        text-align: center;
-    }
+      }
 
-    #menu a:last-child {
-        border: none;
-    }
+      #map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id='map'></div>
+    <script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoiamVzc2licmVlbiIsImEiOiJGNnlGVkRrIn0.Ar8l7jFbPYG3SWR-DrTyNQ';
+    var map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/jessibreen/civtsskgs001a2klqnb8lgc62'
+    });
+    map.on('click', function(e) {
+  var features = map.queryRenderedFeatures(e.point, {
+    layers: ['points'] // replace this with the name of the layer
+  });
 
-    #menu a:hover {
-        background-color: #f8f8f8;
-        color: #404040;
-    }
+  if (!features.length) {
+    return;
+  }
 
-    #menu a.active {
-        background-color: #3887be;
-        color: #ffffff;
-    }
+  var feature = features[0];
 
-    #menu a.active:hover {
-        background: #3074a4;
-    }
-</style>
-
-    <div id="container">
-      <div class="inner">
-
-        <header>
-          <h1>Points of Accessibility</h1>
-          <h2>Mapping accessibility in Lexington, KY</h2>
-        </header>
-
-        <!-- <section id="downloads" class="clearfix">
-          <a href="https://github.com/jessibreen/poa/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
-          <a href="https://github.com/jessibreen/poa/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
-          <a href="https://github.com/jessibreen/poa" id="view-on-github" class="button"><span>View on GitHub</span></a>
-        </section> -->
-
-
-        <hr>
-
-        <section id="main_content">
-          <h3>
-<a id="points-of-accessibility" class="anchor" href="#points-of-accessibility" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Points of Accessibility</h3>
-
-<p>An initiative to map accessible businesses in the greater downtown area of Lexington and to educate and acknowledge businesses for accessibility.
-</p>
-
-
-<div id='map'style="width: 600px; height: 600px;">
-<nav id="menu"></nav>
-</div>
-
-        <script>
-        mapboxgl.accessToken = 'pk.eyJ1IjoiamVzc2licmVlbiIsImEiOiJGNnlGVkRrIn0.Ar8l7jFbPYG3SWR-DrTyNQ';
-
-        // var bounds = [
-        //     [-84.50300710678505, 38.0428294258083], // Southwest coordinates
-        //     [-84.49091945904043, 38.055193900468076]  // Northeast coordinates
-        // ];
-
-        var maptile = new mapboxgl.Map({
-            container: 'map', // container id
-            style: 'mapbox://styles/jessibreen/civtsskgs001a2klqnb8lgc62',
-            //style: 'mapbox://styles/jessibreen/citd061d7002r2jlqwjdzfvh4', //stylesheet location
-            center: [-84.494, 38.048], // starting position
-            zoom: 13.3, // starting zoom
-            //bearing: 48.05, //, //angling the map to make N Limestone north
-            //maxBounds: bounds //set bounds as max
-        });
-
-        var sitePoints = null;
-
-        function style(feature) {
-            return {
-                //fillColor: setColor(feature.properties.program_type),
-                fillColor: "#24bede",
-                color: "white",
-                fillOpacity: 0.9,
-                width: 0.2,
-                //size: 6px
-            };
-        }
-        var activePoint;
-
-        function highlightFeature(e) {
-            if (activePoint) {
-                activePoint.setStyle(style(activePoint.feature));
-            };
-            
-            var layer = e.target;
-            activePoint = e.target;
-            
-            
-            activePoint.setStyle({
-                fillColor: '#f6630f',
-            });
-        }
-
-        //get geoJSON and put it on the map
-        $.getJSON("data/points.geojson",function(data){
-            // Create data layer
-            sitePoints = L.geoJson(data, {
-                pointToLayer: function (feature, latlng) {
-                return L.circleMarker (latlng, style(feature));
-                },
-                
-                
-             onEachFeature: function(feature, layer) {            
-                var props = layer.feature.properties;
-                
-                layer.bindPopup("<h2>"+props.Name+"</h2>"+
-                        "<dl>"+
-                    props.ADDRESS+"<br>"+props.City+", "+props.State+
-                    //" "+props.zipcode+        
-                            "<dt>"+"In-Store Accessibility: "+"</dt><dd>"+props.instore+"</dd>"+
-                            "<dt>"+"Accessibile Entryway: "+"</dt><dd>"+props.entryway+"</dd>"+
-                            "<dt>"+"Accessible Bathroom: "+"</dt><dd>"+props.bathroom+"</dd>"+
-                            "<dt>"+"Braille and Visual Aids: "+"</dt><dd>"+props.visual+"</dd>"+
-                            "<dt>"+"Available Outlets: "+"</dt><dd>"+props.outlets+"</dd>"+
-
-                            // "<dt>"+"Contact: "+"</dt><dd>"+props.contact+"<br>"+props.email+"<br>"+props.phone+"</dd>"+
-                            // "<dt>"+"Hours of Operation: "+"</dt><dd>"+props.hours+"</dd>"+
-                            // "<dt>"+"Storage Capacity: "+"</dt><dd>"+props.storage_cap+"</dd>"+
-                            // "<dt>"+"Type of Program: "+"</dt><dd>"+props.program_type+"</dd>"+
-                            // "<dt>"+"Food Education Offered: "+"</dt><dd>"+props.food_ed+"</dd>"+
-                            // "<dt>"+"Regular Gleaning Donation: "+"</dt><dd>"+props.reg_donation+"</dd>"+
-                            // "<dt>"+"Produce Restrictions: "+"</dt><dd>"+props.produce_restrictions + "</dd>"+
-                        "</dl>");
-            
-                layer.on({
-                    click: highlightFeature
-                });
-                
-            }
+  var popup = new mapboxgl.Popup({ offset: [0, -15] })
+    .setLngLat(feature.geometry.coordinates)
+    .setHTML('<h3>' + feature.properties.Name + '</h3><p>' + feature.properties.ADDRESS + '</p>')
+    .setLngLat(feature.geometry.coordinates)
+    .addTo(map);
 });
-
-var map = L.map('map', {maxZoom: 17}).fitBounds(sitePoints.getBounds());
-    //maptile.addTo(map);
-    sitePoints.addTo(map);
-    //legend.addTo(map);
-
-}); 
-    //     map.on('load', function () {
-    // map.addSource('bathroom', {
-    //     type: 'vector',
-    //     url: 'mapbox://jessibreen.citx6q3ow00fc33plnn506srt-2f9p8'
-    // });
-    // map.addLayer({
-    //     'id': 'Accessible Bathroom',
-    //     'type': 'circle',
-    //     'source': 'bathroom',
-    //     'layout': {
-    //         'visibility': 'visible'
-    //     },
-    //     'paint': {
-    //         'circle-radius': 8,
-    //         'circle-color': 'rgba(43,182,115,1)'
-    //     },
-    //     'source-layer': 'bathroom'
-    // });
-
-    // map.addSource('visual', {
-    //     type: 'vector',
-    //     url: 'mapbox://jessibreen.citx6rx4r00dp2yplmi63yxnc-4juv1'
-    // });
-    // map.addLayer({
-    //     'id': 'Braille & Visual Aids',
-    //     'type': 'circle',
-    //     'source': 'visual',
-    //     'layout': {
-    //         'visibility': 'visible'
-    //     },
-    //     'paint': {
-    //         'circle-radius': 8,
-    //         'circle-color': 'rgba(0,114,178,1)'
-    //     },
-    //     'source-layer': 'visual'
-    // });
-
-    // map.addSource('outlets', {
-    //     type: 'vector',
-    //     url: 'mapbox://jessibreen.citx6rlkk00af2oqnw96vefsh-2v90t'
-    // });
-    // map.addLayer({
-    //     'id': 'Available Outlets',
-    //     'type': 'circle',
-    //     'source': 'outlets',
-    //     'layout': {
-    //         'visibility': 'visible'
-    //     },
-    //     'paint': {
-    //         'circle-radius': 8,
-    //         'circle-color': 'rgba(204,121,167,1)'
-    //     },
-    //     'source-layer': 'outlets'
-    // });
-
-    // map.addSource('instore', {
-    //     type: 'vector',
-    //     url: 'mapbox://jessibreen.citx6rao200fe2ynvoeh37c6o-4s9su'
-    // });
-    // map.addLayer({
-    //     'id': 'In-store Accessibility',
-    //     'type': 'circle',
-    //     'source': 'instore',
-    //     'layout': {
-    //         'visibility': 'visible'
-    //     },
-    //     'paint': {
-    //         'circle-radius': 8,
-    //         'circle-color': 'rgba(251,176,64,1)'
-    //     },
-    //     'source-layer': 'instore'
-    // });
-
-    // map.addSource('entryway', {
-    //     type: 'vector',
-    //     url: 'mapbox://jessibreen.citx6qyfm00c42to8zjomxt4r-7itoh'
-    // });
-    // map.addLayer({
-    //     'id': 'Accessible Entryway',
-    //     'type': 'circle',
-    //     'source': 'entryway',
-    //     'layout': {
-    //         'visibility': 'visible'
-    //     },
-    //     'paint': {
-    //         'circle-radius': 8,
-    //         'circle-color': 'rgba(90,180,229,1)'
-    //     },
-    //     'source-layer': 'entryway'
-    // });
-
-    
-// });
-
-// var toggleableLayerIds = [ 'In-store Accessibility','Accessible Entryway', 'Accessible Bathroom', 'Braille & Visual Aids', 'Available Outlets'];
-
-// for (var i = 0; i < toggleableLayerIds.length; i++) {
-//     var id = toggleableLayerIds[i];
-
-//     var link = document.createElement('a');
-//     link.href = '#';
-//     link.className = 'active';
-//     link.textContent = id;
-
-//     link.onclick = function (e) {
-//         var clickedLayer = this.textContent;
-//         e.preventDefault();
-//         e.stopPropagation();
-
-//         var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
-
-//         if (visibility === 'visible') {
-//             map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-//             this.className = '';
-//         } else {
-//             this.className = 'active';
-//             map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
-//         }
-//     };
-
-//     var layers = document.getElementById('menu');
-//     layers.appendChild(link);
-// }
-        </script>
-
-        </section>
-        <br>
-        <p> Download printable versions of the maps:</p>
-           <p> <a href="https://github.com/jessibreen/poa/blob/master/maps/dtwnmap.pdf"> Downtown Lexington </a> </p>
-           <p> <a href="https://github.com/jessibreen/poa/blob/master/maps/nemap.pdf"> Lexington North End </a> </p>
-
-        <br>
-        <p> Help improve the map:</p>
-        <p> <a href="https://goo.gl/forms/PESTTLRaxnh4ZWNX2">Add a business</a></p>
-        <footer>
-          <!-- Points of Accessibility is maintained by <a href="https://github.com/jessibreen">jessibreen</a><br> -->
-          This page was generated by <a href="https://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.
-        </footer>
-
-        
-      </div>
-    </div>
+    </script>
   </body>
 </html>
