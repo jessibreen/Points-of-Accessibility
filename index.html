@@ -107,7 +107,7 @@
         //     [-84.49091945904043, 38.055193900468076]  // Northeast coordinates
         // ];
 
-        var map = new mapboxgl.Map({
+        var maptile = new mapboxgl.Map({
             container: 'map', // container id
             style: 'mapbox://styles/jessibreen/civtsskgs001a2klqnb8lgc62',
             //style: 'mapbox://styles/jessibreen/citd061d7002r2jlqwjdzfvh4', //stylesheet location
@@ -183,7 +183,7 @@
 });
 
 var map = L.map('map', {maxZoom: 17}).fitBounds(sitePoints.getBounds());
-    map.addTo(map);
+    maptile.addTo(map);
     sitePoints.addTo(map);
     //legend.addTo(map);
 
