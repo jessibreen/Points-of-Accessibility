@@ -163,6 +163,13 @@
                 
             }
 });
+
+var map = L.map('map', {maxZoom: 17}).fitBounds(sitePoints.getBounds());
+    map.addTo(map);
+    sitePoints.addTo(map);
+    //legend.addTo(map);
+
+}); 
     //     map.on('load', function () {
     // map.addSource('bathroom', {
     //     type: 'vector',
