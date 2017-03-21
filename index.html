@@ -93,10 +93,10 @@
         <script>
         mapboxgl.accessToken = 'pk.eyJ1IjoiamVzc2licmVlbiIsImEiOiJGNnlGVkRrIn0.Ar8l7jFbPYG3SWR-DrTyNQ';
 
-        var bounds = [
-            [-84.50300710678505, 38.0428294258083], // Southwest coordinates
-            [-84.49091945904043, 38.055193900468076]  // Northeast coordinates
-        ];
+        // var bounds = [
+        //     [-84.50300710678505, 38.0428294258083], // Southwest coordinates
+        //     [-84.49091945904043, 38.055193900468076]  // Northeast coordinates
+        // ];
 
         var map = new mapboxgl.Map({
             container: 'map', // container id
@@ -108,129 +108,184 @@
             //maxBounds: bounds //set bounds as max
         });
 
-        map.on('load', function () {
-    map.addSource('bathroom', {
-        type: 'vector',
-        url: 'mapbox://jessibreen.citx6q3ow00fc33plnn506srt-2f9p8'
-    });
-    map.addLayer({
-        'id': 'Accessible Bathroom',
-        'type': 'circle',
-        'source': 'bathroom',
-        'layout': {
-            'visibility': 'visible'
-        },
-        'paint': {
-            'circle-radius': 8,
-            'circle-color': 'rgba(43,182,115,1)'
-        },
-        'source-layer': 'bathroom'
-    });
+        var sitePoints = null;
 
-    map.addSource('visual', {
-        type: 'vector',
-        url: 'mapbox://jessibreen.citx6rx4r00dp2yplmi63yxnc-4juv1'
-    });
-    map.addLayer({
-        'id': 'Braille & Visual Aids',
-        'type': 'circle',
-        'source': 'visual',
-        'layout': {
-            'visibility': 'visible'
-        },
-        'paint': {
-            'circle-radius': 8,
-            'circle-color': 'rgba(0,114,178,1)'
-        },
-        'source-layer': 'visual'
-    });
+        var activePoint;
 
-    map.addSource('outlets', {
-        type: 'vector',
-        url: 'mapbox://jessibreen.citx6rlkk00af2oqnw96vefsh-2v90t'
-    });
-    map.addLayer({
-        'id': 'Available Outlets',
-        'type': 'circle',
-        'source': 'outlets',
-        'layout': {
-            'visibility': 'visible'
-        },
-        'paint': {
-            'circle-radius': 8,
-            'circle-color': 'rgba(204,121,167,1)'
-        },
-        'source-layer': 'outlets'
-    });
+        function highlightFeature(e) {
+            if (activePoint) {
+                activePoint.setStyle(style(activePoint.feature));
+            };
+            
+            var layer = e.target;
+            activePoint = e.target;
+            
+            
+            activePoint.setStyle({
+                fillColor: '#f6630f',
+            });
+        }
 
-    map.addSource('instore', {
-        type: 'vector',
-        url: 'mapbox://jessibreen.citx6rao200fe2ynvoeh37c6o-4s9su'
-    });
-    map.addLayer({
-        'id': 'In-store Accessibility',
-        'type': 'circle',
-        'source': 'instore',
-        'layout': {
-            'visibility': 'visible'
-        },
-        'paint': {
-            'circle-radius': 8,
-            'circle-color': 'rgba(251,176,64,1)'
-        },
-        'source-layer': 'instore'
-    });
+        //get geoJSON and put it on the map
+        $.getJSON("points.geojson",function(data){
+            // Create data layer
+            sitePoints = L.geoJson(data, {
+                pointToLayer: function (feature, latlng) {
+                return L.circleMarker (latlng, style(feature));
+                },
+                
+                
+             onEachFeature: function(feature, layer) {            
+                var props = layer.feature.properties;
+                
+                layer.bindPopup("<h2>"+props.Name+"</h2>"+
+                        "<dl>"+
+                    props.ADDRESS+"<br>"+props.City+", "+props.State+
+                    //" "+props.zipcode+        
+                            "<dt>"+"In-Store Accessibility: "+"</dt><dd>"+props.instore+"</dd>"+
+                            "<dt>"+"Accessibile Entryway: "+"</dt><dd>"+props.entryway+"</dd>"+
+                            "<dt>"+"Accessible Bathroom: "+"</dt><dd>"+props.bathroom+"</dd>"+
+                            "<dt>"+"Braille and Visual Aids: "+"</dt><dd>"+props.visual+"</dd>"+
+                            "<dt>"+"Available Outlets: "+"</dt><dd>"+props.outlets+"</dd>"+
 
-    map.addSource('entryway', {
-        type: 'vector',
-        url: 'mapbox://jessibreen.citx6qyfm00c42to8zjomxt4r-7itoh'
-    });
-    map.addLayer({
-        'id': 'Accessible Entryway',
-        'type': 'circle',
-        'source': 'entryway',
-        'layout': {
-            'visibility': 'visible'
-        },
-        'paint': {
-            'circle-radius': 8,
-            'circle-color': 'rgba(90,180,229,1)'
-        },
-        'source-layer': 'entryway'
-    });
+                            // "<dt>"+"Contact: "+"</dt><dd>"+props.contact+"<br>"+props.email+"<br>"+props.phone+"</dd>"+
+                            // "<dt>"+"Hours of Operation: "+"</dt><dd>"+props.hours+"</dd>"+
+                            // "<dt>"+"Storage Capacity: "+"</dt><dd>"+props.storage_cap+"</dd>"+
+                            // "<dt>"+"Type of Program: "+"</dt><dd>"+props.program_type+"</dd>"+
+                            // "<dt>"+"Food Education Offered: "+"</dt><dd>"+props.food_ed+"</dd>"+
+                            // "<dt>"+"Regular Gleaning Donation: "+"</dt><dd>"+props.reg_donation+"</dd>"+
+                            // "<dt>"+"Produce Restrictions: "+"</dt><dd>"+props.produce_restrictions + "</dd>"+
+                        "</dl>");
+            
+                layer.on({
+                    click: highlightFeature
+                });
+                
+            }
+});
+    //     map.on('load', function () {
+    // map.addSource('bathroom', {
+    //     type: 'vector',
+    //     url: 'mapbox://jessibreen.citx6q3ow00fc33plnn506srt-2f9p8'
+    // });
+    // map.addLayer({
+    //     'id': 'Accessible Bathroom',
+    //     'type': 'circle',
+    //     'source': 'bathroom',
+    //     'layout': {
+    //         'visibility': 'visible'
+    //     },
+    //     'paint': {
+    //         'circle-radius': 8,
+    //         'circle-color': 'rgba(43,182,115,1)'
+    //     },
+    //     'source-layer': 'bathroom'
+    // });
+
+    // map.addSource('visual', {
+    //     type: 'vector',
+    //     url: 'mapbox://jessibreen.citx6rx4r00dp2yplmi63yxnc-4juv1'
+    // });
+    // map.addLayer({
+    //     'id': 'Braille & Visual Aids',
+    //     'type': 'circle',
+    //     'source': 'visual',
+    //     'layout': {
+    //         'visibility': 'visible'
+    //     },
+    //     'paint': {
+    //         'circle-radius': 8,
+    //         'circle-color': 'rgba(0,114,178,1)'
+    //     },
+    //     'source-layer': 'visual'
+    // });
+
+    // map.addSource('outlets', {
+    //     type: 'vector',
+    //     url: 'mapbox://jessibreen.citx6rlkk00af2oqnw96vefsh-2v90t'
+    // });
+    // map.addLayer({
+    //     'id': 'Available Outlets',
+    //     'type': 'circle',
+    //     'source': 'outlets',
+    //     'layout': {
+    //         'visibility': 'visible'
+    //     },
+    //     'paint': {
+    //         'circle-radius': 8,
+    //         'circle-color': 'rgba(204,121,167,1)'
+    //     },
+    //     'source-layer': 'outlets'
+    // });
+
+    // map.addSource('instore', {
+    //     type: 'vector',
+    //     url: 'mapbox://jessibreen.citx6rao200fe2ynvoeh37c6o-4s9su'
+    // });
+    // map.addLayer({
+    //     'id': 'In-store Accessibility',
+    //     'type': 'circle',
+    //     'source': 'instore',
+    //     'layout': {
+    //         'visibility': 'visible'
+    //     },
+    //     'paint': {
+    //         'circle-radius': 8,
+    //         'circle-color': 'rgba(251,176,64,1)'
+    //     },
+    //     'source-layer': 'instore'
+    // });
+
+    // map.addSource('entryway', {
+    //     type: 'vector',
+    //     url: 'mapbox://jessibreen.citx6qyfm00c42to8zjomxt4r-7itoh'
+    // });
+    // map.addLayer({
+    //     'id': 'Accessible Entryway',
+    //     'type': 'circle',
+    //     'source': 'entryway',
+    //     'layout': {
+    //         'visibility': 'visible'
+    //     },
+    //     'paint': {
+    //         'circle-radius': 8,
+    //         'circle-color': 'rgba(90,180,229,1)'
+    //     },
+    //     'source-layer': 'entryway'
+    // });
 
     
-});
+// });
 
-var toggleableLayerIds = [ 'In-store Accessibility','Accessible Entryway', 'Accessible Bathroom', 'Braille & Visual Aids', 'Available Outlets'];
+// var toggleableLayerIds = [ 'In-store Accessibility','Accessible Entryway', 'Accessible Bathroom', 'Braille & Visual Aids', 'Available Outlets'];
 
-for (var i = 0; i < toggleableLayerIds.length; i++) {
-    var id = toggleableLayerIds[i];
+// for (var i = 0; i < toggleableLayerIds.length; i++) {
+//     var id = toggleableLayerIds[i];
 
-    var link = document.createElement('a');
-    link.href = '#';
-    link.className = 'active';
-    link.textContent = id;
+//     var link = document.createElement('a');
+//     link.href = '#';
+//     link.className = 'active';
+//     link.textContent = id;
 
-    link.onclick = function (e) {
-        var clickedLayer = this.textContent;
-        e.preventDefault();
-        e.stopPropagation();
+//     link.onclick = function (e) {
+//         var clickedLayer = this.textContent;
+//         e.preventDefault();
+//         e.stopPropagation();
 
-        var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+//         var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
 
-        if (visibility === 'visible') {
-            map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-            this.className = '';
-        } else {
-            this.className = 'active';
-            map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
-        }
-    };
+//         if (visibility === 'visible') {
+//             map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+//             this.className = '';
+//         } else {
+//             this.className = 'active';
+//             map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+//         }
+//     };
 
-    var layers = document.getElementById('menu');
-    layers.appendChild(link);
-}
+//     var layers = document.getElementById('menu');
+//     layers.appendChild(link);
+// }
         </script>
 
         </section>
