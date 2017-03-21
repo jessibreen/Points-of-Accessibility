@@ -130,7 +130,7 @@
         }
 
         //get geoJSON and put it on the map
-        $.getJSON("points.geojson",function(data){
+        $.getJSON("data/points.geojson",function(data){
             // Create data layer
             sitePoints = L.geoJson(data, {
                 pointToLayer: function (feature, latlng) {
