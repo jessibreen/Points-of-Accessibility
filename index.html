@@ -96,8 +96,8 @@
     var map = new mapboxgl.Map({
       container: 'map',
       style: 'mapbox://styles/jessibreen/civtsskgs001a2klqnb8lgc62',
-      center: [-84.494, 38.048], // starting position
-      zoom: 13.3,
+      center: [-84.487955, 38.051129], // starting position
+      zoom: 13.8,
       bearing: 48.05
     });
     map.on('click', function(e) {
@@ -121,7 +121,7 @@
     map.addControl(new MapboxGeocoder({
     accessToken: mapboxgl.accessToken
 }));
-    
+
     // map.addControl(new mapboxgl.FullscreenControl());
 
 
